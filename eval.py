@@ -1,13 +1,14 @@
 import torch
 
-def validate(model, val_loader, criterion):
+def validate(model, val_loader, criterion, device):
     model.eval()
     val_loss = 0
     correct, total = 0, 0
 
     with torch.no_grad():
         for batch_idx, (inputs, targets) in enumerate(val_loader):
-            inputs, targets = inputs.cuda(), targets.cuda()
+            # INVIO AL DEVICE CORRETTO (AGNOSTICO)
+            inputs, targets = inputs.to(device), targets.to(device)
 
             outputs = model(inputs)
             loss = criterion(outputs, targets)
@@ -21,4 +22,4 @@ def validate(model, val_loader, criterion):
     val_accuracy = 100. * correct / total
 
     print(f'Validation Loss: {val_loss:.6f} Acc: {val_accuracy:.2f}%')
-    return val_accuracy
+    return val_accuracy, val_loss
